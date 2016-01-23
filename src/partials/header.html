@@ -1,0 +1,58 @@
+
+<div class="header_container" layout="row">
+	<div class="header_logo" layout="row" flex>
+		<img class="header_logo_image" alt="Anvil" ng-src="{{logoIcon}}" />
+		<p class="header_logo_text">{{appName}}</p>
+	</div>
+	<div class="header_menu" layout="row">
+		<md-input-container aria-label="Language" class="header_language">
+        <md-select ng-model="searchQuery.searchLanguage" placeholder="Language">
+          <md-option ng-repeat="lang in langOptions" value="{{lang}}">
+            {{lang}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+		<md-input-container aria-label="Search Type" class="header_type">
+        <md-select ng-model="searchQuery.searchType" placeholder="Code Type">
+          <md-option ng-repeat="type in typeOptions" value="{{type}}">
+            {{type}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <input type="text" class="header_input" ng-model="searchQuery.searchString" placeholder="Search CodeFoundry"/>
+      <md-menu md-position-mode="target-right target" >
+          <md-button aria-label="Account Options" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+            <img alt="me" src="assets/me.jpg" class="header_profile" />
+          </md-button>
+          <md-menu-content width="2" >
+            <md-menu-item ng-repeat="item in profileOptions">
+              <md-button ng-click="ctrl.announceClick($index)">
+                  <div layout="row">
+                    <p flex>{{item}}</p>
+                  </div>
+              </md-button>
+            </md-menu-item>
+          </md-menu-content>
+        </md-menu>
+      <!--<div class="header_profile"></div>-->
+		<!-- Contains user profile button/link, settings button, search bar -->
+		<md-fab-speed-dial md-open="false" md-direction="down" class="md-scale header_options" style="margin-right: 5px;">
+	    <md-fab-trigger>
+	      <md-button aria-label="menu" id="settingsButton" class="md-fab md-primary">
+	        <img class="header_options_icon png_icon" id="settings" src="assets/settings.png" alt="Options" />
+	      </md-button>
+	    </md-fab-trigger>
+	    <md-fab-actions>
+	      <md-button aria-label="Notifications" class="md-fab md-raised md-mini">
+	        <img class="header_notifications_icon png_icon" src="assets/notifications.png" alt="Notifications" />
+	      </md-button>
+	      <md-button aria-label="Privacy" class="md-fab md-raised md-mini">
+	        <img class="header_privacy_icon png_icon" src="assets/privacy.png" alt="Privacy" />
+	      </md-button>
+	      <md-button aria-label="Security" class="md-fab md-raised md-mini">
+	        <img class="header_security_icon png_icon" src="assets/security.png" alt="Security" />
+	      </md-button>
+	    </md-fab-actions>
+	  </md-fab-speed-dial> 
+	</div>
+</div>
