@@ -75,38 +75,6 @@ app.get('/load', function (req, res) {
   });
 });
 
-// *
-//  * Searches for documents relevant to user's query and returns them as JSON objects. 
-//  * Max objects: 10
-//  * @param - searchTitle[, freeOrPremium, programmingLanguage]
-//  * @return - JSON object of posts
- 
-// app.get('/load', function (req, res) {
-//   var qData = url.parse(req.url, true).query;
-//   // ig - case-insensitive, search for all matches
-//   var title = new RegExp(qData.searchString, 'ig');
-//   var type = new RegExp(qData.type, 'ig');
-//   if (qData.lang.localeCompare('Any') == 0) {
-//     lang = new RegExp('');
-//   } else {
-//     lang = qData.lang;
-//   }
-
-//   coll.find({'title': {$in: [title]}, 'type': {$in: [type]}, 'lang': {$in: [lang]}}).limit(10)
-//     .toArray(function(err, docs) {
-//     if (!err) {
-//       if (docs) {
-//         res.send(docs);
-//       } else {
-//         res.send('done');
-//       }
-//     } else {
-//       res.send(err);
-//     }
-//   });
-// });
-
-
 /**
  * Increment the rating field of JSON object whenever user clicks the heart 
  * for the respective API
@@ -117,6 +85,20 @@ app.post('/rateupdate', function(req, res) {
   var oid = new ObjectID(req.body._id);
   coll.update({'_id': oid}, {$set: {'rating': req.body.rating + 1}});
   res.send('done');
+});
+
+app.get('/loaduser', function(req, res) {
+  coll.findOne({'author.id': req.body.author.id}).limit(5).toArray(function(err, docs) {
+    if (!err) {
+      if (docs) {
+        res.send(docs);
+      } else {
+        res.send('User does not exist.');
+      }
+    } else {
+      res.send(err);
+    }
+  });
 });
 
 app.listen('3000', function() {
