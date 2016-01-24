@@ -1,0 +1,30 @@
+
+<div class="postContainer">
+	<div class="metadata1">
+		<div class="titleContainer">
+			<img class="langIcon" alt="{{post.lang}}" ng-src="assets/{{post.lang.toLowerCase()}}.png" />
+			<p class="postTitle">{{post.title}}</p>
+		</div>
+		<div class="userImageContainer">
+			<img class="userImage" ng-src="{{post.author.imageUrl}}" />
+		</div>
+		<div class="postInfoContainer">
+			<a ng-href="#/users/{{post.author.id}}"><p class="authorName">{{post.author.username}}</p></a>
+		</div>
+	</div>
+	<div class="codeContainer">
+		<div id="{{'editor' + $index}}" ui-ace="{mode: post.lang.toLowerCase(), theme: github, onLoad: aceLoaded($index, post)}" readonly></div>
+	</div>
+	<div class="docsContainer">
+		<p class="descriptionText">{{post.description}}</p>
+		<div class="keyDateInfo">
+			<p class="apiKeyText">API Key: {{post._id}}</p>
+			<p class="postDate">{{post.datePublished}}</p>
+		</div>
+	</div>
+</div>
+
+<div class="likeDisplay">
+	<img class="likeImage" src="assets/like.png" ng-click="updateLikeData(post)"/>
+	<p class="likeText">{{post.rating}}</p>
+</div>

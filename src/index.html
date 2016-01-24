@@ -13,9 +13,11 @@
 		<!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
 		<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
 		<link rel="stylesheet" type="text/css" href="css/main.css" />
+		<link rel="stylesheet" type="text/css" href="css/apiPost.css" />
 
 		<!-- FONTS -->
 		<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700' rel='stylesheet' type='text/css'>
 
 		<!-- JS -->
 		<!-- Angular Material requires Angular.js Libraries -->
@@ -29,10 +31,27 @@
 
 		<!--Load Angular Route-->
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route.js"></script>
+
+		<!-- UI ACE for the code displays -->
+		<script type="text/javascript" src="bower_components/ace-builds/src-min-noconflict/ace.js"></script>
+		<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+		<script type="text/javascript" src="bower_components/angular-ui-ace/ui-ace.js"></script>
+
+		<!-- Custom Script -->
 		<script src="js/AppModule.js"></script>
+
+
 	</head>
 	<body>
 		<div class="includeHeader" ng-include="'partials/header.html'"></div>
 		<div class="view" ng-view></div>
+		<script>
+			function beginQuery(event) {
+				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+            	if(chCode == 13) {
+            		location.replace("#/posts");
+            	}
+			}
+		</script>
 	</body>
 </html>
