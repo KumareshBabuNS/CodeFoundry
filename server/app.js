@@ -1,5 +1,6 @@
 var express = require('express');
 var MongoClient = require('mongodb').MongoClient;
+var ObjectID = require('mongodb').ObjectID;
 var bp = require('body-parser');
 var assert = require('assert');
 var url = require('url');
@@ -40,6 +41,41 @@ app.use('/', express.static(__dirname + '/../src'));
 //   });
 // });
 
+<<<<<<< HEAD
+/**
+ * Searches for documents relevant to user's query and returns them as JSON objects. 
+ * Max objects: 10
+ * @param - searchTitle[, freeOrPremium, programmingLanguage]
+ * @return - JSON object of posts
+ */
+app.get('/load', function (req, res) {
+  var qData = url.parse(req.url, true).query;
+  // ig - case-insensitive, search for all matches
+  var title = new RegExp(qData.searchString, 'ig');
+  if (qData.type == 'Any') {
+    type = new RegExp('');
+  } else {
+    type = qData.type;;
+  }
+  if (qData.lang == 'Any') {
+    lang = new RegExp('');
+  } else {
+    lang = qData.lang;
+  }
+
+  coll.find({'title': {$in: [title]}, 'type': {$in: [type]}, 'lang': {$in: [lang]}}).limit(10).toArray(function(err, docs) {
+    if (!err) {
+      if (docs) {
+        res.send(docs);
+      } else {
+        res.send('No APIs of that sort.');
+      }
+    } else {
+      res.send(err);
+    }
+  });
+});
+=======
 // *
 //  * Searches for documents relevant to user's query and returns them as JSON objects. 
 //  * Max objects: 10
@@ -70,6 +106,19 @@ app.use('/', express.static(__dirname + '/../src'));
 //     }
 //   });
 // });
+>>>>>>> e6d037b1dd980c3e7fe204ff10fa2b1805341742
+
+/**
+ * Increment the rating field of JSON object whenever user clicks the heart 
+ * for the respective API
+ * @param - ObjectId of document
+ * @return - increment rating on webpage and database
+ */
+app.post('/rateupdate', function(req, res) {
+  var oid = new ObjectID(req.body._id);
+  coll.update({'_id': oid}, {$set: {'rating': req.body.rating + 1}});
+  res.send('done');
+});
 
 app.listen('3000', function() {
   console.log('Listening on port 3000');
