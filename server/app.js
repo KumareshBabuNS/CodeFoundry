@@ -4,6 +4,7 @@ var ObjectID = require('mongodb').ObjectID;
 var bp = require('body-parser');
 var assert = require('assert');
 var url = require('url');
+var cors = require('cors');
 
 var app = express();
 // used to store the database collection that will be modified
@@ -11,6 +12,7 @@ var coll;
 
 app.use(bp.json());
 app.use('/', express.static(__dirname + '/../src'));
+app.use(cors());
 
 // // Connect to database
 MongoClient.connect('mongodb://localhost:27017/CodeFoundry', function (err, db) {
