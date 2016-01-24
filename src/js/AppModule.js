@@ -69,7 +69,7 @@ app.controller('homeController', function($scope, $http, MockUser) {
 	$scope.msg = "This is the home page, under construction.";
 });
 
-app.controller('DialogController', function($scope, $rootScope, MockUser) {
+app.controller('DialogController', function($scope, $rootScope, $mdDialog, MockUser) {
 	var changedTimes = 0;
 	$scope.langOpts = $rootScope.langOptions;
 	$scope.postToPublish = {
@@ -92,6 +92,21 @@ app.controller('DialogController', function($scope, $rootScope, MockUser) {
 			});
 		}
 	});
+
+	$scope.accept = function() {
+		$scope.postToPublish.datePublished = new Date();
+		MockUser.addPost({
+			title: $scope.postToPublish.title,
+			lang: $scope.postToPublish.lang,
+			date: $scope.postToPublish.datePublished
+		});
+		$scope.$emit('published', $scope.postToPublish);
+		$mdDialog.hide();
+	}
+
+	$scope.cancel = function() {
+		$mdDialog.hide();
+	}
 });
 
 app.controller('profileController', function($scope, $http, $mdDialog, $mdMedia, MockUser) {
@@ -102,6 +117,10 @@ app.controller('profileController', function($scope, $http, $mdDialog, $mdMedia,
 	$scope.liked = MockUser.getLiked();
 	$scope.interests = MockUser.getInterests();
 	$scope.mode = "JavaScript";
+
+	$scope.$on('published', function(args) {
+		alert("We got: " + args);
+	});
 
 	$scope.showAdvanced = function(ev) {
 	    var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
@@ -260,7 +279,7 @@ app.factory("MockUser", function() {
 	}
 
 	user.addPost = function(postId) {
-		posts.push(postId);
+		user.posts.push(postId);
 	}
 
 	user.doesLike = function(post) {
