@@ -1,2 +1,36 @@
 
-<h1>{{msg}}</h1>
+<div class="userInfo side">
+	<div class="profileInfo">
+		<img class="photo" alt="Photo" ng-src="{{userPhoto}}" />
+		<p class="userNamePlate">{{userName}}</p>
+		<p class="userEmailPlate">{{userEmail}}</p>
+	</div>
+	<div class="publishButtonContainer">
+		<md-button class="publishButton md-raised" ng-click="showAdvanced($event)">Publish New API</md-button>
+	</div>
+</div>
+<div class="userLists side">
+	<div class="selfPosts">
+		<div class="titleSection">
+			<p class="selfPostTitle">Your APIs</p>
+		</div>
+		<div class="uploadList" ng-repeat="post in published">
+			<self-post></self-post>
+		</div>
+	</div>
+	<div class="likedPosts">
+		<div class="titleSection">
+			<p class="selfPostTitle">Recently Liked</p>
+		</div>
+		<div class="uploadList" ng-repeat="post in liked">
+			<self-post></self-post>
+		</div>
+	</div>
+
+</div>
+<div class="interestListArea">
+	<p class="interestsTitle">Your Interests</p>
+	<div class="chipContainer">
+		<md-chips ng-model="interests" readonly="false"></md-chips>
+	</div>
+</div>

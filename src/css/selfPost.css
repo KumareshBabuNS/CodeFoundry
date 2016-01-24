@@ -1,0 +1,25 @@
+
+.selfPostContainer {
+	width: 100%;
+	padding: 5px;
+	overflow: auto;
+}
+
+.selfPostPublicationTitle {
+	font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    color: #565656;
+    margin-top: 10px;
+    margin-left: 45px;
+    float: left;
+}
+
+.selfPostInfoButton {
+	float: right;
+}
+
+.selfPostDate {
+	float: right;
+	font-family: 'Source Code Pro';
+	color: #bfbfbf;
+}

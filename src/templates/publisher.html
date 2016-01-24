@@ -1,0 +1,31 @@
+
+<div class="publisherContainer">
+	<!-- Title -->
+	<div class="postTitleArea">
+		<p class="postTitleText newPostSectionTitle">Title</title>
+	</div>
+	<input type="text" class="publisher_input" ng-model="postToPublish.title" placeholder="Title"/>
+
+	<!-- Description -->
+	<div class="postTitleArea">
+		<p class="postTitleText newPostSectionTitle">Description</title>
+	</div>
+	<input type="text" class="publisher_input" ng-model="postToPublish.description" placeholder="Description"/>
+
+	<!-- Description -->
+	<div class="postTitleArea">
+		<p class="postTitleText newPostSectionTitle">Code</title>
+	</div>
+	<div class="postEditor" id="newPostEditor" ng-model="postToPublish.code" ui-ace="{theme: github}"></div>
+
+	<md-input-container aria-label="Language" class="newPost_lang">
+        <md-select ng-model="postToPublish.lang" placeholder="Language">
+          <md-option ng-repeat="lang in langOpts" value="{{lang}}">
+            {{lang}}
+          </md-option>
+        </md-select>
+    </md-input-container>
+
+    <md-button class="newPostButton publishButtonCancel md-raised">Cancel</md-button>
+    <md-button class="newPostButton publishButtonAccept md-raised">Publish</md-button>
+</div>
