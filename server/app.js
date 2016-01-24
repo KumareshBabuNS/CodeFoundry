@@ -120,6 +120,20 @@ app.post('/rateupdate', function(req, res) {
   res.send('done');
 });
 
+app.get('/loaduser', function(req, res) {
+  coll.findOne({'author.id': req.body.author.id}).limit(5).toArray(function(err, docs) {
+    if (!err) {
+      if (docs) {
+        res.send(docs);
+      } else {
+        res.send('User does not exist.');
+      }
+    } else {
+      res.send(err);
+    }
+  });
+});
+
 app.listen('3000', function() {
   console.log('Listening on port 3000');
 });
