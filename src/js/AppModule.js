@@ -69,7 +69,7 @@ app.controller('homeController', function($scope, $http, MockUser) {
 	$scope.msg = "This is the home page, under construction.";
 });
 
-app.controller('DialogController', function($scope, $rootScope, $mdDialog, MockUser) {
+app.controller('DialogController', function($scope, $rootScope, $mdDialog, $http, MockUser) {
 	var changedTimes = 0;
 	$scope.langOpts = $rootScope.langOptions;
 	$scope.postToPublish = {
@@ -100,8 +100,13 @@ app.controller('DialogController', function($scope, $rootScope, $mdDialog, MockU
 			lang: $scope.postToPublish.lang,
 			date: $scope.postToPublish.datePublished
 		});
-		$scope.$emit('published', $scope.postToPublish);
-		$mdDialog.hide();
+
+		$http.post("/save", JSON.stringify($scope.postToPublish)).success(function(respose) {
+			console.log("Posted successfully!");
+			$mdDialog.hide();
+		}).catch(function(err) {
+			console.log("There was problem posting... " + err);
+		})
 	}
 
 	$scope.cancel = function() {
@@ -110,16 +115,16 @@ app.controller('DialogController', function($scope, $rootScope, $mdDialog, MockU
 });
 
 app.controller('profileController', function($scope, $http, $mdDialog, $mdMedia, MockUser) {
-	$scope.userPhoto = MockUser.getPhoto();
-	$scope.userName = MockUser.getUsername();
-	$scope.userEmail = MockUser.getUserEmail();
-	$scope.published = MockUser.getPosts();
-	$scope.liked = MockUser.getLiked();
-	$scope.interests = MockUser.getInterests();
-	$scope.mode = "JavaScript";
-
-	$scope.$on('published', function(args) {
-		alert("We got: " + args);
+	$http.get('loaduser').success(function(response) {
+		$scope.published = response;
+		$scope.userPhoto = MockUser.getPhoto();
+		$scope.userName = MockUser.getUsername();
+		$scope.userEmail = MockUser.getUserEmail();
+		$scope.liked = MockUser.getLiked();
+		$scope.interests = MockUser.getInterests();
+		$scope.mode = "JavaScript";
+	}).catch(function() {
+		console.log("Couldn't load posts...");
 	});
 
 	$scope.showAdvanced = function(ev) {
@@ -146,65 +151,11 @@ app.controller('profileController', function($scope, $http, $mdDialog, $mdMedia,
 });	
 
 app.controller('postsController', function($scope, $http, $rootScope, MockUser) {
-	console.log($rootScope.searchQuery.searchString);
-	$scope.apiPosts = [
-		{
-			_id: "A4XYT34Z2309VGRSHT56",
-		    title: "JavaScript bubble sort",
-		    author: {
-		        username: "Vuk Petrovic", 
-		        id: "abdsfsdv353y3gdvdb",
-		        imageUrl: "https://media.licdn.com/mpr/mpr/shrinknp_200_200/p/5/005/078/11a/206c973.jpg"
-		    },
-		    datePublished: "1-23-2016",
-		    code: "function binaryIndexOf(searchElement) {\n" +
-			    "'use strict';\n" +
-			 
-			    "var minIndex = 0;\n" +
-			    "var maxIndex = this.length - 1;\n" +
-			    "var currentIndex;\n" +
-			    "var currentElement;\n" +
-			 
-			    "while (minIndex <= maxIndex) {\n" +
-			        "currentIndex = (minIndex + maxIndex) / 2 | 0;\n" +
-			        "currentElement = this[currentIndex];\n" +
-			 
-			        "if (currentElement < searchElement) {\n" +
-			            "minIndex = currentIndex + 1;\n" +
-			        "}"+
-			        "else if (currentElement > searchElement) {\n"+
-			            "maxIndex = currentIndex - 1;\n"+
-			        "}\n"+
-			        "else {\n"+
-			            "return currentIndex;\n"+
-			        "}\n"+
-			    "}\n"+
-			 
-			    "return -1;\n"+
-			"}\n",
-		    description: "This is a function call that performs a bubble sort on the supplied data.",
-		    lang: "JavaScript", 
-		    rating: 15
-	    },
-	    {
-			_id: "A4XefefT34Z2309VGRSHT56",
-		    title: "Center align anything",
-		    author: {
-		        username: "Ken Watson", 
-		        id: "abdsfsdv353y3gdvdb",
-		        imageUrl: "http://static4.businessinsider.com/image/4f7b908169bedda91400001c/10-things-you-should-never-say-to-a-front-end-web-developer.jpg"
-		    },
-		    datePublished: "1-23-2016",
-		    code: ".element {\n"+
-					  "\tposition: relative;\n"+
-					  "\ttop: 50%;\n"+
-					  "\ttransform: translateY(-50%);\n"+
-					"}",
-		    description: "This is a way you can vertically align anything in the center of the screen.",
-		    lang: "CSS", 
-		    rating: 15
-	    }
-	]
+	$http.get("/load").success(function(response) {
+		$scope.apiPosts = response;
+	}).catch(function(err) {
+		console.log("Couldn't get api posts from db...");
+	})
 	//$scope.eventSources = [];
 	$scope.aceLoaded = function(idx, post) {
 		var el = document.getElementById("editor" + idx);

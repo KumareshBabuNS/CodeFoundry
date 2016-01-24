@@ -13,35 +13,34 @@ app.use(bp.json());
 app.use('/', express.static(__dirname + '/../src'));
 
 // // Connect to database
-// MongoClient.connect('mongodb://localhost:27017/CodeFoundry', function (err, db) {
-//   if (!err) {
-//     // prints if successfully connects to database
-//     console.log('Connected');
-//   }
-//   coll = db.collection('demoDB');
-// });
+MongoClient.connect('mongodb://localhost:27017/CodeFoundry', function (err, db) {
+  if (!err) {
+    // prints if successfully connects to database
+    console.log('Connected');
+  }
+  coll = db.collection('demoDB');
+});
 
-// /**
-//  * Takes the JSON from client side and inserts it as document into the database
-//  * @param - JSON object
-//  * @return - success/fail message
-//  */
-// app.post('/save', function(req, res) {
-//   coll.findOne({'title': req.body.title}, function(err, data) {
-//     if (!err) {
-//       if (!data) {
-//         coll.insert(req.body);  // insert if no errors, and data does not exists
-//         res.send('Entry saved.');
-//       } else {
-//         res.send('Another document has already taken that title.');
-//       }
-//     } else {
-//       res.send(err);
-//     }
-//   });
-// });
+/**
+ * Takes the JSON from client side and inserts it as document into the database
+ * @param - JSON object
+ * @return - success/fail message
+ */
+app.post('/save', function(req, res) {
+  coll.findOne({'title': req.body.title}, function(err, data) {
+    if (!err) {
+      if (!data) {
+        coll.insert(req.body);  // insert if no errors, and data does not exists
+        res.send('Entry saved.');
+      } else {
+        res.send('Another document has already taken that title.');
+      }
+    } else {
+      res.send(err);
+    }
+  });
+});
 
-<<<<<<< HEAD
 /**
  * Searches for documents relevant to user's query and returns them as JSON objects. 
  * Max objects: 10
@@ -75,7 +74,7 @@ app.get('/load', function (req, res) {
     }
   });
 });
-=======
+
 // *
 //  * Searches for documents relevant to user's query and returns them as JSON objects. 
 //  * Max objects: 10
@@ -106,7 +105,7 @@ app.get('/load', function (req, res) {
 //     }
 //   });
 // });
->>>>>>> e6d037b1dd980c3e7fe204ff10fa2b1805341742
+
 
 /**
  * Increment the rating field of JSON object whenever user clicks the heart 
