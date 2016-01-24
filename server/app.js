@@ -62,17 +62,21 @@ app.get('/load', function (req, res) {
     lang = qData.lang;
   }
 
-  coll.find({'title': {$in: [title]}, 'type': {$in: [type]}, 'lang': {$in: [lang]}}).limit(10).toArray(function(err, docs) {
-    if (!err) {
-      if (docs) {
-        res.send(docs);
-      } else {
-        res.send('No APIs of that sort.');
-      }
-    } else {
-      res.send(err);
-    }
-  });
+  if(qData.searchString.length != 0) {
+	  coll.find({'title': {$in: [title]}, 'lang': {$in: [lang]}}).limit(10).toArray(function(err, docs) {
+	    if (!err) {
+	      if (docs) {
+	        res.send(docs);
+	      } else {
+	        res.send('No APIs of that sort.');
+	      }
+	    } else {
+	      res.send(err);
+	    }
+	  });
+	} else {
+		res.send();
+	}
 });
 
 /**
@@ -83,12 +87,12 @@ app.get('/load', function (req, res) {
  */
 app.post('/rateupdate', function(req, res) {
   var oid = new ObjectID(req.body._id);
-  coll.update({'_id': oid}, {$set: {'rating': req.body.rating + 1}});
+  coll.update({'_id': oid}, {$set: {'rating': req.body.rating}});
   res.send('done');
 });
 
 app.get('/loaduser', function(req, res) {
-  coll.findOne({'author.id': req.body.author.id}).limit(5).toArray(function(err, docs) {
+  coll.find({'author.id': "8346509f62h1"}).limit(5).toArray(function(err, docs) {
     if (!err) {
       if (docs) {
         res.send(docs);
@@ -99,6 +103,40 @@ app.get('/loaduser', function(req, res) {
       res.send(err);
     }
   });
+});
+
+app.get('/call', function(req, res) {
+	var qData = url.parse(req.url, true).query;
+
+	var oId = new ObjectID(qData.apiKey);
+	coll.findOne({'_id': oId}, function(err, data) {
+		if(err) {
+			res.send("error");
+		} else {
+			if(data.lang.toLowerCase() == "html" || data.lang.toLowerCase() == "css") {
+				res.send(data.code);
+			} else {
+				if(data.code.indexOf(" ") > data.code.indexOf("(")) {
+					var paran = "(";
+					paran += data.code;
+					paran += ")();";
+					eval(paran);
+				} else {
+					var functionCall = data.code.substr(data.code.indexOf(" ") + 1, data.code.indexOf("("));
+					for(var prop in qData) {
+						if(prop != "apiKey") {
+							functionCall += prop + ",";
+						}
+					}
+					functionCall += ");";
+					eval(data.code);
+					eval(functionCall);
+				}
+
+				res.send("success");
+			}
+		}
+	})
 });
 
 app.listen('3000', function() {

@@ -19,7 +19,7 @@
           </md-option>
         </md-select>
       </md-input-container>
-      <input type="text" class="header_input" ng-model="searchQuery.searchString" onkeypress="beginQuery(event);" placeholder="Search CodeFoundry"/>
+      <input type="text" class="header_input" ng-model="searchQuery.searchString" ng-keypress="search($event.keyCode)" placeholder="Search CodeFoundry"/>
       <md-menu md-position-mode="target-right target" >
           <md-button aria-label="Account Options" class="md-icon-button" ng-click="$mdOpenMenu($event)">
             <img alt="me" src="assets/me.jpg" class="header_profile" />

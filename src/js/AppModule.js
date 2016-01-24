@@ -13,16 +13,16 @@ app.config(['$routeProvider',
         controller: 'profileController'
       })
       .when('/', {
-      	templateUrl: 'templates/home.html',
-        controller: 'homeController'
+      	templateUrl: 'templates/profile.html',
+        controller: 'profileController'
       })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/users/:id'
       });
 }]);
 
 //defines application-wide constants
-app.run(function($rootScope, MockUser, $location) {
+app.run(function($rootScope, MockUser, $location, $route) {
 	$rootScope.logoIcon = "assets/anvil.png";
 	$rootScope.appName = "CodeFoundry";
 	$rootScope.settingsOpen = false;
@@ -63,10 +63,20 @@ app.run(function($rootScope, MockUser, $location) {
 		searchType: "Any",
 		searchLanguage: "JavaScript"
 	}
+
+	$rootScope.search = function(code) {
+		if(code == 13) {
+			if($location.path() == '/posts') {
+				$route.reload();
+			} else {
+				$location.path('/posts');
+			}
+		}
+	}
 });
 
 app.controller('homeController', function($scope, $http, MockUser) {
-	$scope.msg = "This is the home page, under construction.";
+	
 });
 
 app.controller('DialogController', function($scope, $rootScope, $mdDialog, $http, MockUser) {
@@ -102,7 +112,7 @@ app.controller('DialogController', function($scope, $rootScope, $mdDialog, $http
 		});
 
 		$http.post("/save", JSON.stringify($scope.postToPublish)).success(function(respose) {
-			console.log("Posted successfully!");
+			$rootScope.published.push($scope.postToPublish);
 			$mdDialog.hide();
 		}).catch(function(err) {
 			console.log("There was problem posting... " + err);
@@ -114,18 +124,19 @@ app.controller('DialogController', function($scope, $rootScope, $mdDialog, $http
 	}
 });
 
-app.controller('profileController', function($scope, $http, $mdDialog, $mdMedia, MockUser) {
+app.controller('profileController', function($scope, $http, $mdDialog, $mdMedia, $rootScope, MockUser) {
 	$http.get('loaduser').success(function(response) {
-		$scope.published = response;
-		$scope.userPhoto = MockUser.getPhoto();
-		$scope.userName = MockUser.getUsername();
-		$scope.userEmail = MockUser.getUserEmail();
-		$scope.liked = MockUser.getLiked();
-		$scope.interests = MockUser.getInterests();
-		$scope.mode = "JavaScript";
+		$rootScope.published = response;
 	}).catch(function() {
 		console.log("Couldn't load posts...");
 	});
+
+	$scope.mode = "JavaScript";
+	$scope.userPhoto = MockUser.getPhoto();
+	$scope.userName = MockUser.getUsername();
+	$scope.userEmail = MockUser.getUserEmail();
+	$scope.liked = MockUser.getLiked();
+	$scope.interests = MockUser.getInterests();
 
 	$scope.showAdvanced = function(ev) {
 	    var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
@@ -151,9 +162,16 @@ app.controller('profileController', function($scope, $http, $mdDialog, $mdMedia,
 });	
 
 app.controller('postsController', function($scope, $http, $rootScope, MockUser) {
-	$http.get("/load").success(function(response) {
-		$scope.apiPosts = response;
+	$http.get("/load?searchString=" + $rootScope.searchQuery.searchString + "&lang=" + $rootScope.searchQuery.searchLanguage).success(function(response) {
+		$rootScope.apiPosts = response;
+		if(response.length == 0) {
+			$scope.noMoreMessage = "There doesn't seem to be any posts here...";
+		} else {
+			$scope.noMoreMessage = "There doesn't seem to be any additional posts here...";
+		}	
+
 	}).catch(function(err) {
+		$scope.noMoreMessage = "There was an error loading posts...";
 		console.log("Couldn't get api posts from db...");
 	})
 	//$scope.eventSources = [];
@@ -173,6 +191,11 @@ app.controller('postsController', function($scope, $http, $rootScope, MockUser) 
 			post.rating++;
 		}
 		//send update request to backend to update post
+		$http.post('/rateupdate', JSON.stringify(post)).success(function(response) {
+			console.log("Likes updated!");
+		}).catch(function(err) {
+			console.log("Couldn't update post likes..." + err);
+		})
 	}
 });
 
@@ -200,23 +223,7 @@ app.factory("MockUser", function() {
 	user.imageUrl = "https://media.licdn.com/mpr/mpr/shrinknp_200_200/p/5/005/078/11a/206c973.jpg";
 	user.interests = ["JavaScript", "CSS", "HTML", "C++", "Java", "Web Development", "Algorithms"];
 	user.likes = [];
-	user.posts = [
-		{
-			title: "Twilio API call",
-			lang: "JavaScript",
-			datePublished: "1-21-2016",
-		}, 
-		{
-			title: "Quicksort implementation",
-			lang: "JavaScript",
-			datePublished: "1-22-2016",
-		},
-		{
-			title: "Carousel",
-			lang: "HTML",
-			datePublished: "1-23-2016",
-		}
-	];
+	user.posts = [];
 
 	user.addLike = function(postId) {
 		user.likes.push(postId);

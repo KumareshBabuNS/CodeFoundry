@@ -48,13 +48,5 @@
 	<body>
 		<div class="includeHeader" ng-include="'partials/header.html'"></div>
 		<div class="view" ng-view></div>
-		<script>
-			function beginQuery(event) {
-				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-            	if(chCode == 13) {
-            		location.replace("#/posts");
-            	}
-			}
-		</script>
 	</body>
 </html>
